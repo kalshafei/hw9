@@ -58,3 +58,9 @@ void key_poll()
     __key_prev= __key_curr;
     __key_curr= ~REG_KEYINPUT & KEY_MASK;
 }
+
+u32 key_hit(u32 key)
+{   return ( __key_curr &~ __key_prev) & key;  }
+
+u32 key_released(u32 key)
+{   return (~__key_curr &  __key_prev) & key;  }
