@@ -1,11 +1,12 @@
 //Kyle Al-Shafei
 //CS2110 HW9
+
 #include "mylib.h"
 
-
+unsigned short *videoBuffer = (unsigned short *)0x6000000;
 // A function to set pixel (r, c) to the color passed in
 void setPixel(int r, int c, u16 color) {
-	videoBuffer[OFFSET(r, c)] = color;
+	videoBuffer[OFFSET(row, col, 240)] = color;
 }
 
 // A function to draw a FILLED rectangle starting at (r, c)
@@ -13,7 +14,7 @@ void drawRect(int r, int c, int width, int height, u16 color)
 {
 	for (int row = 0; row < height; i++) {
 		for (int col = 0; col < width; col++) {
-			videoBuffer[OFFSET(row + r, col + c)] = color;
+			setPixel(row + r, col + c, color);
 		}
 	}
 }
@@ -64,3 +65,10 @@ u32 key_hit(u32 key)
 
 u32 key_released(u32 key)
 {   return (~__key_curr &  __key_prev) & key;  }
+
+void waitForVblank()
+{
+	while(SCANLINECOUNTER > 160);
+	while(SCANLINECOUNTER < 160);
+}
+
