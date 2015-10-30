@@ -62,7 +62,8 @@ enum GBAState {
 int yEdgeCollision(int y, int height, int yD);
 int xEdgeCollision(int x, int width, int xD);
 int checkOutOfBound(int x, int y, u16* mask);
-int horWallCollision(int x, int y, int size, int xD);
+int vertWallCollision(int x, int y, int size, int xD);
+int horWallCollision(int x, int y, int size, int yD);
 int game();
 
 int main() {
@@ -160,18 +161,19 @@ int game() {
         }
         if(KEY_DOWN_NOW(BUTTON_LEFT))
         {
-            int wall = horWallCollision(oldPlayerX, oldPlayerY, player.size, neg);
+            int wall = vertWallCollision(oldPlayerX, oldPlayerY, player.size, neg);
             int edge = xEdgeCollision(oldPlayerX, player.size, neg);
             newPlayerX += MAX(edge, wall);
         }
         if(KEY_DOWN_NOW(BUTTON_RIGHT))
         {
-            int wall = horWallCollision(oldPlayerX, oldPlayerY, player.size, player.speed);
+            int wall = vertWallCollision(oldPlayerX, oldPlayerY, player.size, player.speed);
             int edge = xEdgeCollision(oldPlayerX, player.size,  player.speed);
             newPlayerX += MIN(edge, wall);
         }
         if(KEY_DOWN_NOW(BUTTON_DOWN))
         {
+
             newPlayerY += yEdgeCollision(oldPlayerY, player.size,  player.speed);
         }
 
@@ -212,23 +214,41 @@ int yEdgeCollision(int y, int height, int yD) {
 }
 
 
-int horWallCollision(int x, int y, int size, int xD) {
+int vertWallCollision(int x, int y, int size, int xD) {
+    // if (xD > 0) {
+    //     for (int i = 1; i < xD; i++) {
+    //         for (int j = 0; j < size + 1; j++) {
+    //             if (getColor(y + j, x + i + size) == BLACK) {
+    //                 return i - 1;
+    //             }
+    //         }
+    //     }
+    // } else if (xD < 0) {
+    //     for (int i = -1; i > xD; i--) {
+    //         for (int j = 0; j < size + 1; j++) {
+    //             if (getColor(y + j,x + i) == BLACK) {
+    //                 return i + 1;
+    //             }
+    //         }
+    //     }
+    // } 
+    // return xD;
     if (xD > 0) {
-        for (int i = 1; i < xD; i++) {
-            for (int j = 0; j < size + 1; j++) {
-                if (getColor(y + j, x + i + size) == BLACK) {
-                    return i - 1;
-                }
+        for (int j = 0; j < size; j++) {
+            if (getColor(y + j, x + size + xD) == BLACK) {
+                return 0;
             }
         }
     } else if (xD < 0) {
-        for (int i = -1; i > xD; i--) {
-            for (int j = 0; j < size + 1; j++) {
-                if (getColor(y + j,x + i, videoBuffer)) {
-                    return i + 1;
-                }
+        for (int j = 0; j < size; j++) {
+            if (getColor(y + j, x - xD) == BLACK) {
+                return 0;
             }
         }
-    } 
+    }
     return xD;
+}
+
+int horWallCollision(int x, int y, int size, int yD) {
+    return 0;
 }
