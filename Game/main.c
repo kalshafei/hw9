@@ -67,7 +67,7 @@ int main() {
 	while(1) {
 		if(KEY_DOWN_NOW(BUTTON_UP))
 		{
-			player.y--;
+			newPlayerY--;
 			// if (!yEdgeCollision(player.y, player.size, -1 * player.speed)) {
 			// 	newPlayerY += player.speed * -1;
 			// }
@@ -77,23 +77,25 @@ int main() {
 			// if (!xEdgeCollision(player.x, player.size,  -1 * player.speed)) {
 			// 	newPlayerX += -1 * player.speed;
 			// }
-			player.x--;
+			newPlayerX--;
 		}
 		if(KEY_DOWN_NOW(BUTTON_RIGHT))
 		{
 			// if (!xEdgeCollision(player.x, player.size,  player.speed)) {
 			// 	newPlayerX += player.speed;
 			// }
-			player.x++;
+			neyPlayerX++;
 		}
 		if(KEY_DOWN_NOW(BUTTON_DOWN))
 		{
 			// newPlayerY += yEdgeCollision(player.y, player.size,  player.speed);
-			player.y++
+			newPlayerY++;
 		}
 
 		drawRect(oldPlayerY, oldPlayerX , player.size, player.size, WHITE);
 		drawRect(newPlayerY, newPlayerX, player.size, player.size, BLUE);
+		oldPlayerX = newPlayerX;
+		oldPlayerY = newPlayerY;
 		// update(enemy1);
 		// update(enemy2);
 		// drawEnemy(enemy1);
