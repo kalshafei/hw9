@@ -5,14 +5,14 @@
 
 unsigned short *videoBuffer = (unsigned short *)0x6000000;
 // A function to set pixel (r, c) to the color passed in
-void setPixel(int r, int c, u16 color) {
+void setPixel(int row, int col, u16 color) {
 	videoBuffer[OFFSET(row, col, 240)] = color;
 }
 
 // A function to draw a FILLED rectangle starting at (r, c)
 void drawRect(int r, int c, int width, int height, u16 color)
 {
-	for (int row = 0; row < height; i++) {
+	for (int row = 0; row < height; row++) {
 		for (int col = 0; col < width; col++) {
 			setPixel(row + r, col + c, color);
 		}
@@ -31,8 +31,8 @@ void drawHollowRect(int r, int c, int width, int height, u16 color)
 	}
 	//Paint ceiling and floor
 	for (int col = 0; col < width; col++) {
-		videoBuffer[OFFSET(row, col + c, 240)] = color;
-		videoBuffer[OFFSET(row + height - 1, col + c, 240)] = color;
+		videoBuffer[OFFSET(r, col + c, 240)] = color;
+		videoBuffer[OFFSET(r + height - 1, col + c, 240)] = color;
 	}
 }
 /* drawimage3
@@ -61,6 +61,7 @@ void waitForVblank()
 }
 
 u16* getPixel(int row, int col) {
-	return &(u16)videoBuffer[OFFSET(row, col, 240)];
+	u16* pixP = (u16*)videoBuffer[OFFSET(row, col, 240)];
+	return pixP;
 }
 
