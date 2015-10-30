@@ -174,7 +174,10 @@ int game() {
             int edge = yEdgeCollision(oldPlayerY, player.size,  player.speed);
             newPlayerY += MIN(wall, edge);
         }
+        //ERASE
+        drawRect(oldPlayerY, oldPlayerX , player.size, player.size, WHITE);
 
+        //DRAW NEW
         drawRect(tile1.x, tile1.y, tile1.size, tile1.size, tile1.color);    //Draw Tile
         drawLine(gate1.x, gate1.y, gate1.length, gate1.direction, RED);
         if(tileCollision(player, tile1)) {
@@ -182,6 +185,8 @@ int game() {
             gate1.direction = 0; 
             drawLine(gate1.x, gate1.y, gate1.length, gate1.direction, RED);
         }
+
+        drawLine(20, 20, 5, 0, RED);
 
         drawRect(oldPlayerY, oldPlayerX , player.size, player.size, WHITE);
         drawRect(newPlayerY, newPlayerX, player.size, player.size, player.color);
@@ -255,38 +260,18 @@ int horWallCollision(int x, int y, int size, int yD) {
 }
 
 int tileCollision(PLAYER p, SWITCH g) {
-    int x = p.x;
-    int y = p.y;
-    int psize = p.size;
-    int sx = g.x;
-    int sy = g.y;
-    int ssize = g.size
-
-    int xCheck = 0;
-    int yCheck = 0;
-    //left
-    if (x < sx) {
-        if (x + size >= sx) {
-            xCheck = 1;
-        }
-    } else if (x > sx) {
-        if (sx + ssize >= x) {
-            xCheck = 1;
-        }
+    int px1 = p.x;
+    int py1 = p.y;
+    int px2 = x1 + p.size;
+    int py2 = y1 + p.size;
+    int sx1 = g.x;
+    int sy1 = g.y;
+    int sx2 = sx1 + g.size;
+    int sy2 = sy1 + g.size;
+    if (px1 <= sx2 && px2 >= sx1 &&
+    py1 <= sy2 && py2 >= sy1) {
+        return 1;
     } else {
-        xCheck = 1;
+        return 0;
     }
-
-    if (y < sy) {
-        if (ys + size >= y) {
-            yCheck = 1;
-        }
-    } else if (y < sy) {
-        if (y + size >= ys) {
-            yCheck = 1;
-        }
-    } else {
-        yCheck = 1;
-    }
-    return yCheck && xCheck;
 }
