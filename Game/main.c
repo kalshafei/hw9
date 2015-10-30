@@ -50,8 +50,8 @@ enum GBAState {
     START_NODRAW,
     MAZE1,
     MAZE1_NODRAW,
-    MAZE2,
-    MAZE2_NODRAW,
+//    MAZE2,
+//    MAZE2_NODRAW,
     LOSE,
     LOSE_NODRAW,
     WIN,
@@ -68,6 +68,7 @@ int horWallCollision(int x, int y, int size, int xD);
 int main() {
     REG_DISPCTL = MODE_3 | BG2_EN;
     enum GBAState state = START;
+    int i = gameState
 
     while(1) {
         switch(state) {
@@ -86,17 +87,17 @@ int main() {
             state = MAZE1_NODRAW;
             break;
         case MAZE1_NODRAW:
-            int i = game();
-            if (i == 0) {
+            gameState = game();
+            if (gameState == 0) {
                 state = START;
-            } else  if (i == 1) {
+            } else  if (gameState == 1) {
                 state = LOSE;
             } else {
                 state = WIN;
             }
             break;
         case LOSE:
-            drawImage3(30, 30, LOST_WIDTH, LOST_HEIGHT);
+            drawImage3(30, 30, LOST_WIDTH, LOST_HEIGHT, Lost.h);
             state = LOSE_NODRAW;
             break;
         case LOSE_NODRAW:
@@ -105,7 +106,7 @@ int main() {
             }
             break;
         case WIN:
-            drawImage3(30, 30, Won_WIDTH, Won_HEIGHT);
+            drawImage3(30, 30, Won_WIDTH, Won_HEIGHT, Won.h);
             state = Won_NODRAW;
         case WIN_NODRAW:
             if(KEY_DOWN_NOW(BUTTON_SELECT)) {
@@ -126,27 +127,24 @@ int game() {
     //GATE gate2 = {x, y, length, direction, RED};
     //SWITCH tile1 = {x, y, 4, BLUE};
     //SWITCH tile2 = {x, y, 4, BLUE};
+    
+    // int won = 0;
+    // int lost = 0;
     int oldPlayerX = player.x;
     int oldPlayerY = player.y;
     int newPlayerX = oldPlayerX;
     int newPlayerY = oldPlayerY;
 
-    int won = 0;
-    int lost = 0;
-
-
     while(1) {
-
-        if(KEY_DOWN_NOW(BUTTON_SELECT) {
+        if(KEY_DOWN_NOW(BUTTON_SELECT)) {
             return 0
         }
-        if(won) {
-            return 2;
-        }
-        if(lost) {
-            return 1;
-        }
-        
+        // if(won) {
+        //     return 2;
+        // }
+        // if(lost) {
+        //     return 1;
+        // }      
 
         int neg = -1 * player.speed;
         if(KEY_DOWN_NOW(BUTTON_UP))
@@ -178,7 +176,6 @@ int game() {
 
         waitForVblank();
     }
-
     return 0;
 }
 
