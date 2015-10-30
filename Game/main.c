@@ -3,6 +3,12 @@
 
 #include "mylib.h"
 #include <stdlib.h>
+#include "Start.h"
+#include "maze1.h"
+#include "maze2.h"
+#include "Lost.h"
+#include "Won.h"
+
 
 #define MIN(a,b) (((a) > (b) ? (b):(a)))
 #define MAX(a,b) (((a) < (b) ? (b):(a)))
@@ -39,38 +45,109 @@ typedef struct {
     u16 color;
 } SWITCH;
 
+enum GBAState {
+    START,
+    START_NODRAW,
+    MAZE1,
+    MAZE1_NODRAW,
+    MAZE2,
+    MAZE2_NODRAW,
+    LOSE,
+    LOSE_NODRAW,
+    WIN,
+    WIN_NODRAW
+};
+
+
 int yEdgeCollision(int y, int height, int yD);
 int xEdgeCollision(int x, int width, int xD);
 int checkOutOfBound(int x, int y, u16* mask);
+int horWallCollision(int x, int y, int size, int xD);
 
 
 int main() {
-
     REG_DISPCTL = MODE_3 | BG2_EN;
-    drawRect(0, 0, 240, 160, WHITE);
+    enum GBAState state = START;
+
+    while(1) {
+        switch(state) {
+
+        case START:
+            drawImage3(0, 0, START_WIDTH, START_HEIGHT, Start.h);
+            state = START_NODRAW;
+            break;
+        case START_NODRAW:
+            if(KEY_DOWN_NOW(BUTTON_A)) {
+                state = MAZE1;
+            }
+            break;
+        case MAZE1:
+            drawImage3(0, 0, 240, 160, maze1.h);
+            state = MAZE1_NODRAW;
+            break;
+        case MAZE1_NODRAW:
+            int i = game();
+            if (i == 0) {
+                state = START;
+            } else  if (i == 1) {
+                state = LOSE;
+            } else {
+                state = WIN;
+            }
+            break;
+        case LOSE:
+            drawImage3(30, 30, LOST_WIDTH, LOST_HEIGHT);
+            state = LOSE_NODRAW;
+            break;
+        case LOSE_NODRAW:
+            if(KEY_DOWN_NOW(BUTTON_SELECT)) {
+                state = START;
+            }
+            break;
+        case WIN:
+            drawImage3(30, 30, Won_WIDTH, Won_HEIGHT);
+            state = Won_NODRAW;
+        case WIN_NODRAW:
+            if(KEY_DOWN_NOW(BUTTON_SELECT)) {
+                state = START;
+            }
+            break;
+        }
+    }
+}
+
+int game() {
+
 
     //ENEMY enemy1 = {x, y, 3, 3, 'U', RED}; //Fill in row col start position
     //ENEMY enemy2 = {x, y, 3, 3, 'D', RED};
-
     PLAYER player = {100, 100, 1, 5, RED};
-
     //GATE gate1 = {x, y, length, direction, RED};
     //GATE gate2 = {x, y, length, direction, RED};
-
     //SWITCH tile1 = {x, y, 4, BLUE};
     //SWITCH tile2 = {x, y, 4, BLUE};
-
     int oldPlayerX = player.x;
     int oldPlayerY = player.y;
     int newPlayerX = oldPlayerX;
     int newPlayerY = oldPlayerY;
 
-    drawRect(50, 50, 50, 1, BLACK);
-    drawLine(100, 100, 10, 1, BLACK);
-    drawLine(100, 100, 10, 0, BLACK);
-    //drawRect(100, 100, 1, 50, BLACK);
+    int won = 0;
+    int lost = 0;
+
 
     while(1) {
+
+        if(KEY_DOWN_NOW(BUTTON_SELECT) {
+            return 0
+        }
+        if(won) {
+            return 2;
+        }
+        if(lost) {
+            return 1;
+        }
+        
+
         int neg = -1 * player.speed;
         if(KEY_DOWN_NOW(BUTTON_UP))
         {
@@ -149,9 +226,8 @@ int horWallCollision(int x, int y, int size, int xD) {
                 }
             }
         }
-    } else {
-        return xD;
-    }
+    } 
+    return xD;
 }
 
 int checkOutOfBound(int x, int y, u16* mask) {
