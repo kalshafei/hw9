@@ -68,7 +68,7 @@ int game();
 int main() {
     REG_DISPCTL = MODE_3 | BG2_EN;
     enum GBAState state = START;
-    int i = gameState
+    int gameState;
 
     while(1) {
         switch(state) {
@@ -137,7 +137,7 @@ int game() {
 
     while(1) {
         if(KEY_DOWN_NOW(BUTTON_SELECT)) {
-            return 0
+            return 0;
         }
         // if(won) {
         //     return 2;
