@@ -126,15 +126,10 @@ int main() {
 
 int game() {
 
-
-    //ENEMY enemy1 = {x, y, 3, 3, 'U', RED}; //Fill in row col start position
-    //ENEMY enemy2 = {x, y, 3, 3, 'D', RED};
     PLAYER player = {100, 100, 1, 5, RED};
-    //GATE gate1 = {x, y, length, direction, RED};
-    //GATE gate2 = {x, y, length, direction, RED};
-    //SWITCH tile1 = {x, y, 4, BLUE};
-    //SWITCH tile2 = {x, y, 4, BLUE};
-    
+    GATE gate1 = {x, y, 5, 1, RED};
+    SWITCH tile1 = {0, 0, 5, BLUE};
+
     // int won = 0;
     // int lost = 0;
     int oldPlayerX = player.x;
@@ -152,7 +147,6 @@ int game() {
         // if(lost) {
         //     return 1;
         // }      
-
         int neg = -1 * player.speed;
         if(KEY_DOWN_NOW(BUTTON_UP))
         {
@@ -178,6 +172,15 @@ int game() {
             int wall = horWallCollision(oldPlayerX, oldPlayerY, player.size, player.speed);
             int edge = yEdgeCollision(oldPlayerY, player.size,  player.speed);
             newPlayerY += MIN(wall, edge);
+        }
+
+        if()
+        drawRect(tile1.x, tile1.y, tile1.size, tile1.size, tile1.color);    //Draw Tile
+        drawLine(gate1.x, gate1.y, gate1.length, gate1.direction, RED);
+        if(tileCollision(player, tile1)) {
+            drawLine(gate1.x, gate1.y, gate1.length, gate1.direction, WHITE);
+            gate1.direction = 0; 
+            drawLine(gate1.x, gate1.y, gate1.length, gate1.direction, RED);
         }
 
         drawRect(oldPlayerY, oldPlayerX , player.size, player.size, WHITE);
@@ -220,13 +223,13 @@ int yEdgeCollision(int y, int height, int yD) {
 int vertWallCollision(int x, int y, int size, int xD) {
     if (xD > 0) {
         for (int j = 0; j < size; j++) {
-            if (getColor(y + j, x + size) == BLACK) {
+            if (getColor(y + j, x + size) == BLACK || getColor(y + j, x + size) == RED) {
                 return 0;
             }
         }
     } else if (xD < 0) {
         for (int j = 0; j < size; j++) {
-            if (getColor(y + j, x - 1) == BLACK) {
+            if (getColor(y + j, x - 1) == BLACK || getColor(y + j, x - 1) == RED) {
                 return 0;
             }
         }
@@ -237,16 +240,53 @@ int vertWallCollision(int x, int y, int size, int xD) {
 int horWallCollision(int x, int y, int size, int yD) {
     if (yD > 0) {
         for (int i = 0; i < size; i++) {
-            if (getColor(y - 1, x + i) == BLACK) {
+            if (getColor(y + size, x + i) == BLACK || getColor(y + size, x + i) == RED) {
                 return 0;
             }
         }
-    } else if (xD < 0) {
+    } else if (yD < 0) {
         for (int i = 0; i < size; i++) {
-            if (getColor(y + size, x + i) == BLACK) {
+            if (getColor(y - 1, x + i) == BLACK || getColor(y - 1, x + i) == RED) {
                 return 0;
             }
         }
     }
-    return xD;
+    return yD;
+}
+
+int tileCollision(Player p, SWITCH g) {
+    int x = p.x;
+    int y = p.y;
+    int psize = p.size;
+    int sx = g.x;
+    int sy = g.y;
+    int ssize = g.size
+
+    int xCheck = 0;
+    int yCheck = 0;
+    //left
+    if (x < sx) {
+        if (x + size >= sx) {
+            xCheck = 1;
+        }
+    } else if (x > sx) {
+        if (sx + ssize >= x) {
+            xCheck = 1;
+        }
+    } else {
+        xCheck = 1;
+    }
+
+    if (y < sy) {
+        if (ys + size >= y) {
+            yCheck = 1;
+        }
+    } else if (y < sy) {
+        if (y + size >= ys) {
+            yCheck = 1;
+        }
+    } else {
+        yCheck = 1;
+    }
+    return yCheck && xCheck;
 }
