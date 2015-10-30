@@ -60,8 +60,8 @@ void waitForVblank()
 	while(SCANLINECOUNTER < 160);
 }
 
-u16* getPixel(int row, int col) {
-	u16* pixP = (u16*)videoBuffer[OFFSET(row, col, 240)];
-	return pixP;
+u16 getPixel(int row, int col) {
+	u16 pix = videoBuffer[OFFSET(row, col, 240)];
+	return pix;
 }
 
