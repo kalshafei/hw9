@@ -65,6 +65,7 @@ int checkOutOfBound(int x, int y, u16* mask);
 int vertWallCollision(int x, int y, int size, int xD);
 int horWallCollision(int x, int y, int size, int yD);
 int game();
+int tileCollision(PLAYER p, SWITCH g);
 
 int main() {
     REG_DISPCTL = MODE_3 | BG2_EN;
@@ -127,7 +128,7 @@ int main() {
 int game() {
 
     PLAYER player = {100, 100, 1, 5, RED};
-    GATE gate1 = {x, y, 5, 1, RED};
+    GATE gate1 = {10, 10, 5, 1, RED};
     SWITCH tile1 = {0, 0, 5, BLUE};
 
     // int won = 0;
@@ -174,7 +175,6 @@ int game() {
             newPlayerY += MIN(wall, edge);
         }
 
-        if()
         drawRect(tile1.x, tile1.y, tile1.size, tile1.size, tile1.color);    //Draw Tile
         drawLine(gate1.x, gate1.y, gate1.length, gate1.direction, RED);
         if(tileCollision(player, tile1)) {
@@ -254,7 +254,7 @@ int horWallCollision(int x, int y, int size, int yD) {
     return yD;
 }
 
-int tileCollision(Player p, SWITCH g) {
+int tileCollision(PLAYER p, SWITCH g) {
     int x = p.x;
     int y = p.y;
     int psize = p.size;
