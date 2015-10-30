@@ -61,26 +61,26 @@ int main() {
     int newPlayerX = oldPlayerX;
     int newPlayerY = oldPlayerY;
 
-    //drawRect(50, 50, 50, 1, BLACK);
+    drawRect(50, 50, 50, 1, BLACK);
     //drawRect(100, 100, 1, 50, BLACK);
 
     while(1) {
         int neg = -1 * player.speed;
         if(KEY_DOWN_NOW(BUTTON_UP))
         {
-            newPlayerY += yEdgeCollision(oldPlayerY, player.size, neg);
+            newPlayerY += yEdgeCollision(oldPlayerX, oldPlayerY, player.size, neg);
         }
         if(KEY_DOWN_NOW(BUTTON_LEFT))
         {
-            newPlayerX += xEdgeCollision(oldPlayerX, player.size,  neg);
+            newPlayerX += xEdgeCollision(oldPlayerX, oldPlayerY, player.size, neg);
         }
         if(KEY_DOWN_NOW(BUTTON_RIGHT))
         {
-            newPlayerX += xEdgeCollision(oldPlayerX, player.size,  player.speed);
+            newPlayerX += xEdgeCollision(oldPlayerX, oldPlayerY, player.size,  player.speed);
         }
         if(KEY_DOWN_NOW(BUTTON_DOWN))
         {
-            newPlayerY += yEdgeCollision(oldPlayerY, player.size,  player.speed);
+            newPlayerY += yEdgeCollision(oldPlayerX, oldPlayerY, player.size,  player.speed);
         }
 
         drawRect(oldPlayerY, oldPlayerX , player.size, player.size, WHITE);
@@ -101,30 +101,37 @@ int main() {
     return 0;
 }
 
-int xEdgeCollision(int x, int width, int xD) {
+int xEdgeCollision(int x, int y, int width, int xD) {
     if (xD > 0) {
         if (x + width + xD > 240) {
             //return 240 - x - width;
             return 0;
+        } else if (getPixel(x + width + 1, y) == BLACK) {
+            return 0;
         }
     } else if (xD < 0) {
         if (x + xD < 0) {
-            //return -x;
+            return 0;
+        } else if (getPixel(x - 1, y) == BLACK) {
             return 0;
         }
     }
     return xD;
 }
 
-int yEdgeCollision(int y, int height, int yD) {
+int yEdgeCollision(int x, int y, int height, int yD) {
     if (yD > 0) {
         if (y + height + yD > 160) {
             //return 240 - x - width;
+            return 0;
+        } else if (getPixel(x, y + height + 1) == BLACK) {
             return 0;
         }
     } else if (yD < 0) {
         if (y + yD < 0) {
             //return -x;
+            return 0;
+        } else if (getPixel(x, y - 1) == BLACK) {
             return 0;
         }
     }
