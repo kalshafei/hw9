@@ -59,13 +59,7 @@ enum GBAState {
 };
 
 
-int yEdgeCollision(int y, int height, int yD);
-int xEdgeCollision(int x, int width, int xD);
-int checkOutOfBound(int x, int y, u16* mask);
-int vertWallCollision(int x, int y, int size, int xD);
-int horWallCollision(int x, int y, int size, int yD);
 int game();
-int tileCollision(int px1, int py1, int psize, SWITCH g);
 
 int main() {
     REG_DISPCTL = MODE_3 | BG2_EN;
@@ -100,6 +94,21 @@ int main() {
                 state = WIN;
             }
             break;
+        case MAZE2:
+            drawImage3(0, 0, 240, 160, maze2);
+            state = MAZE2_NODRAW;
+            waitForVblank();
+            break;
+        case MAZE2_NODRAW:
+            gameState = game();
+            if (gameState == 0) {
+                state = START;
+            } else  if (gameState == 1) {
+                state = LOSE;
+            } else {
+                state = WIN;
+            }
+            break;
         case LOSE:
             drawImage3(30, 30, LOST_WIDTH, LOST_HEIGHT, Lost);
             state = LOSE_NODRAW;
@@ -125,14 +134,19 @@ int main() {
     return 0;
 }
 
-int game() {
+int game(int maze) {
+    PLAYER player;
+    GATE gate1;
+    SWITCH tile1;
+    SWITCH winTile;
+    if (maze == 1) {
+        buildMaze1(player, tile1, gate1, winTile);
+    } else {
+        GATE gate2, gate3;
+        SWITCH tile2, tile3;
+        buildMaze2(player, tile1, tile2, tile3, gate1, gate2, gate3, winTile);
+    } 
 
-    PLAYER player = {100, 100, 1, 5, RED};
-    GATE gate1 = {10, 10, 5, 1, RED};
-    SWITCH tile1 = {0, 0, 5, BLUE};
-
-    // int won = 0;
-    // int lost = 0;
     int oldPlayerX = player.x;
     int oldPlayerY = player.y;
     int newPlayerX = oldPlayerX;
@@ -141,13 +155,7 @@ int game() {
     while(1) {
         if(KEY_DOWN_NOW(BUTTON_SELECT)) {
             return 0;
-        }
-        // if(won) {
-        //     return 2;
-        // }
-        // if(lost) {
-        //     return 1;
-        // }      
+        }   
         int neg = -1 * player.speed;
         if(KEY_DOWN_NOW(BUTTON_UP))
         {
@@ -174,103 +182,80 @@ int game() {
             int edge = yEdgeCollision(oldPlayerY, player.size,  player.speed);
             newPlayerY += MIN(wall, edge);
         }
-        //ERASE
-        drawRect(tile1.y, tile1.x, tile1.size, tile1.size, tile1.color);
-        drawRect(oldPlayerY, oldPlayerX , player.size, player.size, WHITE);
+        //Update 
+        drawRect(oldPlayerY, oldPlayerX , player.size, player.size, WHITE); //Erase old Player Location
 
-        //DRAW NEW
-        drawRect(tile1.x, tile1.y, tile1.size, tile1.size, tile1.color);    //Draw Tile
-        drawLine(gate1.x, gate1.y, gate1.length, gate1.direction, RED);
-        if(tileCollision(oldPlayerX,oldPlayerY , player.size, tile1)) {
-            drawLine(gate1.x, gate1.y, gate1.length, gate1.direction, WHITE);
-            gate1.direction = 0; 
+        if (maze == 1) {
+            drawRect(tile1.x, tile1.y, tile1.size, tile1.size, tile1.color);    //Redraw Tile  
+            drawLine(gate1.x, gate1.y, gate1.length, gate1.direction, RED);     //Draw Line
+            if(tileCollision(oldPlayerX,oldPlayerY , player.size, tile1)) {     //Check collision with tile
+                drawLine(gate1.x, gate1.y, gate1.length, gate1.direction, WHITE);//Erase and redraw gate with new direction
+                gate1.direction = 0; 
+                drawLine(gate1.x, gate1.y, gate1.length, gate1.direction, RED);
+            }
+        } else {
+            drawRect(tile1.x, tile1.y, tile1.size, tile1.size, tile1.color);
+            drawRect(tile2.x, tile2.y, tile2.size, tile2.size, tile2.color);
+            drawRect(tile3.x, tile3.y, tile3.size, tile3.size, tile3.color);
             drawLine(gate1.x, gate1.y, gate1.length, gate1.direction, RED);
+            drawLine(gate2.x, gate2.y, gate2.length, gate2.direction, RED);
+            drawLine(gate3.x, gate3.y, gate3.length, gate3.direction, RED);
+            if(tileCollision(oldPlayerX,oldPlayerY , player.size, tile1)) {     //Check collision with tile
+                drawLine(gate1.x, gate1.y, gate1.length, gate1.direction, WHITE);//Erase and redraw gate with new direction
+                gate1.direction = 0; 
+                drawLine(gate1.x, gate1.y, gate1.length, gate1.direction, RED);
+            }
+            if(tileCollision(oldPlayerX,oldPlayerY , player.size, tile2)) {     //Check collision with tile
+                drawLine(gate2.x, gate2.y, gate2.length, gate2.direction, WHITE);//Erase and redraw gate with new direction
+                gate1.direction = 0; 
+                drawLine(gate2.x, gate2.y, gate2.length, gate2.direction, RED);
+            }
+            if(tileCollision(oldPlayerX,oldPlayerY , player.size, tile3)) {     //Check collision with tile
+                drawLine(gate3.x, gate3.y, gate3.length, gate3.direction, WHITE);//Erase and redraw gate with new direction
+                gate1.direction = 0; 
+                drawLine(gate3.x, gate3.y, gate3.length, gate3.direction, RED);
+            }
         }
 
-        drawLine(20, 20, 5, 0, RED);
-
+        if (tileCollision(oldPlayerX, oldPlayerY, player.size winTile)) {
+            return 1;
+        }
+        if (KEY_DOWN_NOW(BUTTON_SELECT)) {
+            return 0;
+        }
         drawRect(oldPlayerY, oldPlayerX , player.size, player.size, WHITE);
         drawRect(newPlayerY, newPlayerX, player.size, player.size, player.color);
         oldPlayerX = newPlayerX;
         oldPlayerY = newPlayerY;
-
         waitForVblank();
     }
     return 0;
 }
 
-int xEdgeCollision(int x, int width, int xD) {
-    if (xD > 0) {
-        if (x + width + xD > 240) {
-            return 0;
-        } 
-    } else if (xD < 0) {
-        if (x + xD < 0) {
-            return 0;
-        } 
-    }
-    return xD;
+
+void buildMaze1(PLAYER p, SWITCH tile1, GATE gate1, SWITCH winTile) {
+    p = {0, 70, 1, 5, RED };
+    winTile = {70, 200, 20, 20};
+    gate1 = {49, 97, 40, 1, RED};
+    tile1 = {10, 10, 10, BLUE};
 }
 
-int yEdgeCollision(int y, int height, int yD) {
-    if (yD > 0) {
-        if (y + height + yD > 160) {
-            return 0;
-        }
-    } else if (yD < 0) {
-        if (y + yD < 0) {
-            return 0;
-        } 
-    }
-    return yD;
+void buildMaze2(Player p, SWITCH tile1, SWITCH tile2, SWITCH tile3, GATE gate1, GATE gate2, GATE gate3, SWITCH winTile) {
+    p = {78, 0, 5, 5, RED};
+    winTile = {75, 75, 15, 15, GREEN};
+    gate1 = {66, 65, 9, 0, RED};
+    tile1 = {141, 10, 10, GREEN};
+    gate2 = {56, 54, 10, 0, RED};
+    tile2 = {10, 10, 10, GREEN};
+    gate3 = {122, 148, 10, 1, RED};
+    tile3 = {143, 66, 8, GREEN};
 }
 
 
-int vertWallCollision(int x, int y, int size, int xD) {
-    if (xD > 0) {
-        for (int j = 0; j < size; j++) {
-            if (getColor(y + j, x + size) == BLACK || getColor(y + j, x + size) == RED) {
-                return 0;
-            }
-        }
-    } else if (xD < 0) {
-        for (int j = 0; j < size; j++) {
-            if (getColor(y + j, x - 1) == BLACK || getColor(y + j, x - 1) == RED) {
-                return 0;
-            }
-        }
-    }
-    return xD;
-}
 
-int horWallCollision(int x, int y, int size, int yD) {
-    if (yD > 0) {
-        for (int i = 0; i < size; i++) {
-            if (getColor(y + size, x + i) == BLACK || getColor(y + size, x + i) == RED) {
-                return 0;
-            }
-        }
-    } else if (yD < 0) {
-        for (int i = 0; i < size; i++) {
-            if (getColor(y - 1, x + i) == BLACK || getColor(y - 1, x + i) == RED) {
-                return 0;
-            }
-        }
-    }
-    return yD;
-}
 
-int tileCollision(int px1, int py1, int psize, SWITCH g) {
-    int px2 = px1 + psize - 1;
-    int py2 = py1 + psize - 1;
-    int sx1 = g.x;
-    int sy1 = g.y;
-    int sx2 = sx1 + g.size - 1;
-    int sy2 = sy1 + g.size - 1;
-    if (px1 <= sx2 && px2 >= sx1 &&
-    py1 <= sy2 && py2 >= sy1) {
-        return 1;
-    } else {
-        return 0;
-    }
-}
+
+
+
+
+

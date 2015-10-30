@@ -48,3 +48,8 @@ void drawImage3(int r, int c, int width, int height, const u16* image);
 void waitForVblank();
 void drawLine(int r, int c, int length, int direction, u16 color);
 u16 getColor(int row, int col);
+int vertWallCollision(int x, int y, int size, int xD);
+int horWallCollision(int x, int y, int size, int yD);
+int yEdgeCollision(int y, int height, int yD);
+int xEdgeCollision(int x, int width, int xD);
+int tileCollision(int px1, int py1, int psize, SWITCH g);
