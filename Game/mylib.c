@@ -26,13 +26,13 @@ void drawHollowRect(int r, int c, int width, int height, u16 color)
 {
 	//paint left and right edges
 	for (int row = 0; row < height; row++) {
-		videoBuffer[row + r, c] = color;
-		videoBuffer[row + r, c + width - 1] = color;
+		videoBuffer[OFFSET(row + r, c, 240)] = color;
+		videoBuffer[OFFSET(row + r, c + width - 1, 240)] = color;
 	}
 	//Paint ceiling and floor
 	for (int col = 0; col < width; col++) {
-		videoBuffer[row, col + c] = color;
-		videoBuffer[row + height - 1, col + c] = color;
+		videoBuffer[OFFSET(row, col + c, 240)] = color;
+		videoBuffer[OFFSET(row + height - 1, col + c, 240)] = color;
 	}
 }
 /* drawimage3
@@ -53,18 +53,6 @@ void drawImage3(int r, int c, int width, int height, const u16* image) {
 	}
 }
 
-
-void key_poll()
-{
-    __key_prev= __key_curr;
-    __key_curr= ~REG_KEYINPUT & KEY_MASK;
-}
-
-u32 key_hit(u32 key)
-{   return ( __key_curr &~ __key_prev) & key;  }
-
-u32 key_released(u32 key)
-{   return (~__key_curr &  __key_prev) & key;  }
 
 void waitForVblank()
 {
