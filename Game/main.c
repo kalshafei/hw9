@@ -63,7 +63,7 @@ int yEdgeCollision(int y, int height, int yD);
 int xEdgeCollision(int x, int width, int xD);
 int checkOutOfBound(int x, int y, u16* mask);
 int horWallCollision(int x, int y, int size, int xD);
-
+int game();
 
 int main() {
     REG_DISPCTL = MODE_3 | BG2_EN;
