@@ -74,24 +74,24 @@ int main() {
         int neg = -1 * player.speed;
         if(KEY_DOWN_NOW(BUTTON_UP))
         {
-            newPlayerY += yEdgeCollision(oldPlayerX, oldPlayerY, player.size, neg);
+            newPlayerY += yEdgeCollision(oldPlayerY, player.size, neg);
 
         }
         if(KEY_DOWN_NOW(BUTTON_LEFT))
         {
             int wall = horWallCollision(oldPlayerX, oldPlayerY, player.size, neg);
-            int edge = yEdgeCollision(oldPlayerX, oldPlayerY, player.size, neg);
+            int edge = xEdgeCollision(oldPlayerX, player.size, neg);
             newPlayerX += MAX(edge, wall);
         }
         if(KEY_DOWN_NOW(BUTTON_RIGHT))
         {
             int wall = horWallCollision(oldPlayerX, oldPlayerY, player.size, player.speed);
-            int edge = xEdgeCollision(oldPlayerX, oldPlayerY, player.size,  player.speed);
+            int edge = xEdgeCollision(oldPlayerX, player.size,  player.speed);
             newPlayerX += MIN(edge, wall);
         }
         if(KEY_DOWN_NOW(BUTTON_DOWN))
         {
-            newPlayerY += yEdgeCollision(oldPlayerX, oldPlayerY, player.size,  player.speed);
+            newPlayerY += yEdgeCollision(oldPlayerY, player.size,  player.speed);
         }
 
         drawRect(oldPlayerY, oldPlayerX , player.size, player.size, WHITE);
