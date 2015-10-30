@@ -67,7 +67,7 @@ void drawLine(int r, int c, int length, int direction, u16 color) {
 		}
 	} else {
 		for (int col = 0; col < length; col++) {
-			setPixel(row, c + col, color);
+			setPixel(r, c + col, color);
 		}
 	}
 }

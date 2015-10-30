@@ -39,8 +39,8 @@ typedef struct {
     u16 color;
 } SWITCH;
 
-int yEdgeCollision(int x, int y, int height, int yD);
-int xEdgeCollision(int x, int y, int width, int xD);
+int yEdgeCollision(int y, int height, int yD);
+int xEdgeCollision(int x, int width, int xD);
 int checkOutOfBound(int x, int y, u16* mask);
 
 
@@ -66,6 +66,8 @@ int main() {
     int newPlayerY = oldPlayerY;
 
     drawRect(50, 50, 50, 1, BLACK);
+    drawLine(100, 100, 10, 1, BLACK);
+    drawLine(100, 100, 10, 0, BLACK);
     //drawRect(100, 100, 1, 50, BLACK);
 
     while(1) {
@@ -103,7 +105,7 @@ int main() {
     return 0;
 }
 
-int xEdgeCollision(int x, int y, int width, int xD) {
+int xEdgeCollision(int x, int width, int xD) {
     if (xD > 0) {
         if (x + width + xD > 240) {
             return 0;
@@ -116,7 +118,7 @@ int xEdgeCollision(int x, int y, int width, int xD) {
     return xD;
 }
 
-int yEdgeCollision(int x, int y, int height, int yD) {
+int yEdgeCollision(int y, int height, int yD) {
     if (yD > 0) {
         if (y + height + yD > 160) {
             return 0;
@@ -142,7 +144,7 @@ int horWallCollision(int x, int y, int size, int xD) {
     } else if (xD < 0) {
         for (int i = -1; i > xD; i--) {
             for (int j = 0; j < size + 1; j++) {
-                if (checkOutOfBound(y + j,x + i, videoBuffer) {
+                if (checkOutOfBound(y + j,x + i, videoBuffer)) {
                     return i + 1;
                 }
             }
