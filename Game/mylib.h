@@ -45,6 +45,6 @@ void setPixel(int r, int c, u16 color);
 void drawRect(int r, int c, int width, int height, u16 color);
 void drawHollowRect(int r, int c, int width, int height, u16 color);
 void drawImage3(int r, int c, int width, int height, const u16* image);
-*u16 getPixel(int row, int col);
+u16* getPixel(int row, int col);
 void waitForVblank();
 
