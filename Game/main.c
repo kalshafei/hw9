@@ -4,10 +4,8 @@
 #include "mylib.h"
 #include <stdlib.h>
 
-#define min(a,b) 
-   ({ __typeof__ (a) _a = (a); 
-       __typeof__ (b) _b = (b); 
-     _a > _b ? _b : _a; })
+#define MIN(a,b) (((a) > (b) ? (b):(a)))
+#define MAX(a,b) (((a) < (b) ? (b):(a)))
 
 typedef struct {
     int x;
@@ -43,6 +41,7 @@ typedef struct {
 
 int yEdgeCollision(int x, int y, int height, int yD);
 int xEdgeCollision(int x, int y, int width, int xD);
+int checkOutOfBound(int x, int y, u16* mask);
 
 
 int main() {
@@ -80,13 +79,13 @@ int main() {
         {
             int wall = horWallCollision(oldPlayerX, oldPlayerY, player.size, neg);
             int edge = yEdgeCollision(oldPlayerX, oldPlayerY, player.size, neg);
-            newPlayerX += min(edge, wall);
+            newPlayerX += MAX(edge, wall);
         }
         if(KEY_DOWN_NOW(BUTTON_RIGHT))
         {
             int wall = horWallCollision(oldPlayerX, oldPlayerY, player.size, player.speed);
             int edge = xEdgeCollision(oldPlayerX, oldPlayerY, player.size,  player.speed);
-            newPlayerX += min(edge, wall);
+            newPlayerX += MIN(edge, wall);
         }
         if(KEY_DOWN_NOW(BUTTON_DOWN))
         {
@@ -97,14 +96,7 @@ int main() {
         drawRect(newPlayerY, newPlayerX, player.size, player.size, player.color);
         oldPlayerX = newPlayerX;
         oldPlayerY = newPlayerY;
-        // update(enemy1);
-        // update(enemy2);
-        // drawEnemy(enemy1);
-        // drawEnemy(enemy2);
-        // drawGate(gate1);
-        // drawGate(gate2);
-        // drawPlayer(player);
-        // checkGateCollision();
+
         waitForVblank();
     }
 
@@ -114,11 +106,8 @@ int main() {
 int xEdgeCollision(int x, int y, int width, int xD) {
     if (xD > 0) {
         if (x + width + xD > 240) {
-            //return 240 - x - width;
             return 0;
-        } else if (xWallCollision(x, y, width, xD)) {
-            return 0;
-        }
+        } 
     } else if (xD < 0) {
         if (x + xD < 0) {
             return 0;
@@ -130,12 +119,10 @@ int xEdgeCollision(int x, int y, int width, int xD) {
 int yEdgeCollision(int x, int y, int height, int yD) {
     if (yD > 0) {
         if (y + height + yD > 160) {
-            //return 240 - x - width;
             return 0;
         }
     } else if (yD < 0) {
         if (y + yD < 0) {
-            //return -x;
             return 0;
         } 
     }
@@ -147,20 +134,28 @@ int horWallCollision(int x, int y, int size, int xD) {
     if (xD > 0) {
         for (int i = 1; i < xD; i++) {
             for (int j = 0; j < size + 1; j++) {
-                if (getPixel(x + j + size, y + i) == BLACK) {
-                    return i;
+                if (checkOutOfBound(y + j, x + i + size, videoBuffer)) {
+                    return i - 1;
                 }
             }
         }
     } else if (xD < 0) {
         for (int i = -1; i > xD; i--) {
             for (int j = 0; j < size + 1; j++) {
-                if (getPixel(x + j + size, y + i) == BLACK) {
-                    return i;
+                if (checkOutOfBound(y + j,x + i, videoBuffer) {
+                    return i + 1;
                 }
             }
         }
     } else {
         return xD;
+    }
+}
+
+int checkOutOfBound(int x, int y, u16* mask) {
+    if (mask[OFFSET(x, y, 240)] == BLACK) {
+        return 1;
+    } else {
+        return 0;
     }
 }

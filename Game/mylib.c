@@ -60,8 +60,14 @@ void waitForVblank()
 	while(SCANLINECOUNTER < 160);
 }
 
-u16 getPixel(int row, int col) {
-	u16 pix = videoBuffer[OFFSET(row, col, 240)];
-	return pix;
+void drawLine(int r, int c, int length, int direction, u16 color) {
+	if (direction == 1) {
+		for (int row = 0; row < length; row++) {
+			setPixel(row + r, c, color);
+		}
+	} else {
+		for (int col = 0; col < length; col++) {
+			setPixel(row, c + col, color);
+		}
+	}
 }
-
