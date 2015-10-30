@@ -48,7 +48,7 @@ int main() {
 	//ENEMY enemy1 = {x, y, 3, 3, 'U', RED}; //Fill in row col start position
 	//ENEMY enemy2 = {x, y, 3, 3, 'D', RED};
 
-	PLAYER player = {100, 200, 1, 5, GREEN};
+	PLAYER player = {100, 100, 1, 5, GREEN};
 
 	//GATE gate1 = {x, y, length, direction, RED};
 	//GATE gate2 = {x, y, length, direction, RED};
@@ -67,29 +67,19 @@ int main() {
 	while(1) {
 		if(KEY_DOWN_NOW(BUTTON_UP))
 		{
-			newPlayerY--;
-			// if (!yEdgeCollision(player.y, player.size, -1 * player.speed)) {
-			// 	newPlayerY += player.speed * -1;
-			// }
+			newPlayerY += yEdgeCollision(player.y, player.size, -1 * player.speed);
 		}
 		if(KEY_DOWN_NOW(BUTTON_LEFT))
 		{
-			// if (!xEdgeCollision(player.x, player.size,  -1 * player.speed)) {
-			// 	newPlayerX += -1 * player.speed;
-			// }
-			newPlayerX--;
+			newPlayerX += xEdgeCollision(player.x, player.size,  -1 * player.speed);
 		}
 		if(KEY_DOWN_NOW(BUTTON_RIGHT))
 		{
-			// if (!xEdgeCollision(player.x, player.size,  player.speed)) {
-			// 	newPlayerX += player.speed;
-			// }
-			neyPlayerX++;
+			newPlayerX += xEdgeCollision(player.x, player.size,  player.speed);
 		}
 		if(KEY_DOWN_NOW(BUTTON_DOWN))
 		{
-			// newPlayerY += yEdgeCollision(player.y, player.size,  player.speed);
-			newPlayerY++;
+			newPlayerY += yEdgeCollision(player.y, player.size,  player.speed);
 		}
 
 		drawRect(oldPlayerY, oldPlayerX , player.size, player.size, WHITE);
@@ -104,6 +94,7 @@ int main() {
 		// drawGate(gate2);
 		// drawPlayer(player);
 		// checkGateCollision();
+		waitForVblank();
 	}
 
 	return 0;
