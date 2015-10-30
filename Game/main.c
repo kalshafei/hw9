@@ -106,8 +106,9 @@ int main() {
             }
             break;
         case WIN:
-            drawImage3(30, 30, Won_WIDTH, Won_HEIGHT, Won.h);
-            state = Won_NODRAW;
+            drawImage3(30, 30, WON_WIDTH, WON_HEIGHT, Won.h);
+            state = WIN_NODRAW;
+            break;
         case WIN_NODRAW:
             if(KEY_DOWN_NOW(BUTTON_SELECT)) {
                 state = START;
@@ -115,6 +116,7 @@ int main() {
             break;
         }
     }
+    return 0;
 }
 
 int game() {
