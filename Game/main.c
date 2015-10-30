@@ -48,7 +48,7 @@ int main() {
 	//ENEMY enemy1 = {x, y, 3, 3, 'U', RED}; //Fill in row col start position
 	//ENEMY enemy2 = {x, y, 3, 3, 'D', RED};
 
-	PLAYER player = {2, 2, 1, 2, GREEN};
+	PLAYER player = {100, 200, 1, 5, GREEN};
 
 	//GATE gate1 = {x, y, length, direction, RED};
 	//GATE gate2 = {x, y, length, direction, RED};
