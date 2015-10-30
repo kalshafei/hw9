@@ -156,7 +156,9 @@ int game() {
         int neg = -1 * player.speed;
         if(KEY_DOWN_NOW(BUTTON_UP))
         {
-            newPlayerY += yEdgeCollision(oldPlayerY, player.size, neg);
+            int wall = horWallCollision(oldPlayerX, oldPlayerY, player.size, neg);
+            int edge = yEdgeCollision(oldPlayerY, player.size, neg);
+            newPlayerY += MAX(edge, wall);
 
         }
         if(KEY_DOWN_NOW(BUTTON_LEFT))
@@ -173,8 +175,9 @@ int game() {
         }
         if(KEY_DOWN_NOW(BUTTON_DOWN))
         {
-
-            newPlayerY += yEdgeCollision(oldPlayerY, player.size,  player.speed);
+            int wall = horWallCollision(oldPlayerX, oldPlayerY, player.size, player.speed);
+            int edge = yEdgeCollision(oldPlayerY, player.size,  player.speed);
+            newPlayerY += MIN(wall, edge);
         }
 
         drawRect(oldPlayerY, oldPlayerX , player.size, player.size, WHITE);
@@ -215,33 +218,15 @@ int yEdgeCollision(int y, int height, int yD) {
 
 
 int vertWallCollision(int x, int y, int size, int xD) {
-    // if (xD > 0) {
-    //     for (int i = 1; i < xD; i++) {
-    //         for (int j = 0; j < size + 1; j++) {
-    //             if (getColor(y + j, x + i + size) == BLACK) {
-    //                 return i - 1;
-    //             }
-    //         }
-    //     }
-    // } else if (xD < 0) {
-    //     for (int i = -1; i > xD; i--) {
-    //         for (int j = 0; j < size + 1; j++) {
-    //             if (getColor(y + j,x + i) == BLACK) {
-    //                 return i + 1;
-    //             }
-    //         }
-    //     }
-    // } 
-    // return xD;
     if (xD > 0) {
         for (int j = 0; j < size; j++) {
-            if (getColor(y + j, x + size + xD) == BLACK) {
+            if (getColor(y + j, x + size) == BLACK) {
                 return 0;
             }
         }
     } else if (xD < 0) {
         for (int j = 0; j < size; j++) {
-            if (getColor(y + j, x - xD) == BLACK) {
+            if (getColor(y + j, x - 1) == BLACK) {
                 return 0;
             }
         }
@@ -250,5 +235,18 @@ int vertWallCollision(int x, int y, int size, int xD) {
 }
 
 int horWallCollision(int x, int y, int size, int yD) {
-    return 0;
+    if (yD > 0) {
+        for (int i = 0; i < size; i++) {
+            if (getColor(y - 1, x + i) == BLACK) {
+                return 0;
+            }
+        }
+    } else if (xD < 0) {
+        for (int i = 0; i < size; i++) {
+            if (getColor(y + size, x + i) == BLACK) {
+                return 0;
+            }
+        }
+    }
+    return xD;
 }
