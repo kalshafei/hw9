@@ -71,3 +71,8 @@ void drawLine(int r, int c, int length, int direction, u16 color) {
 		}
 	}
 }
+
+u16 getColor(int row, int col) {
+	u16 color = videoBuffer[row*240 + col];
+	return color;
+}

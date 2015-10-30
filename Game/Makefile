@@ -11,12 +11,12 @@ PROGNAME = HW9
 
 # The object files you want to compile into your program
 # This should be a space (SPACE!) separated list of .o files
-OFILES = mylib.o main.o
+OFILES = mylib.o main.o maze1.o maze2.o Lost.o Won.o Start.o
 
 # The header files you have created.
 # This is necessary to determine when to recompile for files.
 # This should be a space (SPACE!) separated list of .h files
-HFILES = mylib.h
+HFILES = mylib.h maze1.h maze2.h Lost.h Won.h Start.h
 
 ################################################################################
 # These are various settings used to make the GBA toolchain work

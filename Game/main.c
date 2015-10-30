@@ -74,8 +74,9 @@ int main() {
         switch(state) {
 
         case START:
-            drawImage3(0, 0, START_WIDTH, START_HEIGHT, Start.h);
+            drawImage3(0, 0, START_WIDTH, START_HEIGHT, Start);
             state = START_NODRAW;
+            waitForVblank();
             break;
         case START_NODRAW:
             if(KEY_DOWN_NOW(BUTTON_A)) {
@@ -83,8 +84,9 @@ int main() {
             }
             break;
         case MAZE1:
-            drawImage3(0, 0, 240, 160, maze1.h);
+            drawImage3(0, 0, 240, 160, maze1);
             state = MAZE1_NODRAW;
+            waitForVblank();
             break;
         case MAZE1_NODRAW:
             gameState = game();
@@ -97,8 +99,9 @@ int main() {
             }
             break;
         case LOSE:
-            drawImage3(30, 30, LOST_WIDTH, LOST_HEIGHT, Lost.h);
+            drawImage3(30, 30, LOST_WIDTH, LOST_HEIGHT, Lost);
             state = LOSE_NODRAW;
+            waitForVblank();
             break;
         case LOSE_NODRAW:
             if(KEY_DOWN_NOW(BUTTON_SELECT)) {
@@ -106,8 +109,9 @@ int main() {
             }
             break;
         case WIN:
-            drawImage3(30, 30, WON_WIDTH, WON_HEIGHT, Won.h);
+            drawImage3(30, 30, WON_WIDTH, WON_HEIGHT, Won);
             state = WIN_NODRAW;
+            waitForVblank();
             break;
         case WIN_NODRAW:
             if(KEY_DOWN_NOW(BUTTON_SELECT)) {
@@ -212,7 +216,7 @@ int horWallCollision(int x, int y, int size, int xD) {
     if (xD > 0) {
         for (int i = 1; i < xD; i++) {
             for (int j = 0; j < size + 1; j++) {
-                if (checkOutOfBound(y + j, x + i + size, videoBuffer)) {
+                if (getColor(y + j, x + i + size) == BLACK) {
                     return i - 1;
                 }
             }
@@ -220,19 +224,11 @@ int horWallCollision(int x, int y, int size, int xD) {
     } else if (xD < 0) {
         for (int i = -1; i > xD; i--) {
             for (int j = 0; j < size + 1; j++) {
-                if (checkOutOfBound(y + j,x + i, videoBuffer)) {
+                if (getColor(y + j,x + i, videoBuffer)) {
                     return i + 1;
                 }
             }
         }
     } 
     return xD;
-}
-
-int checkOutOfBound(int x, int y, u16* mask) {
-    if (mask[OFFSET(x, y, 240)] == BLACK) {
-        return 1;
-    } else {
-        return 0;
-    }
 }

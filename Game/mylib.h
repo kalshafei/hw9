@@ -47,3 +47,4 @@ void drawHollowRect(int r, int c, int width, int height, u16 color);
 void drawImage3(int r, int c, int width, int height, const u16* image);
 void waitForVblank();
 void drawLine(int r, int c, int length, int direction, u16 color);
+u16 getColor(int row, int col);
