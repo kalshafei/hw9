@@ -67,25 +67,29 @@ int main() {
 	while(1) {
 		if(KEY_DOWN_NOW(BUTTON_UP))
 		{
-			if (!yEdgeCollision(player.y, player.size, -1 * player.speed)) {
-				newPlayerY += player.speed * -1;
-			}
+			player.y--;
+			// if (!yEdgeCollision(player.y, player.size, -1 * player.speed)) {
+			// 	newPlayerY += player.speed * -1;
+			// }
 		}
 		if(KEY_DOWN_NOW(BUTTON_LEFT))
 		{
-			if (!xEdgeCollision(player.x, player.size,  -1 * player.speed)) {
-				newPlayerX += -1 * player.speed;
-			}
+			// if (!xEdgeCollision(player.x, player.size,  -1 * player.speed)) {
+			// 	newPlayerX += -1 * player.speed;
+			// }
+			player.x--;
 		}
 		if(KEY_DOWN_NOW(BUTTON_RIGHT))
 		{
-			if (!xEdgeCollision(player.x, player.size,  player.speed)) {
-				newPlayerX += player.speed;
-			}
+			// if (!xEdgeCollision(player.x, player.size,  player.speed)) {
+			// 	newPlayerX += player.speed;
+			// }
+			player.x++;
 		}
 		if(KEY_DOWN_NOW(BUTTON_DOWN))
 		{
-			newPlayerY += yEdgeCollision(player.y, player.size,  player.speed);
+			// newPlayerY += yEdgeCollision(player.y, player.size,  player.speed);
+			player.y++
 		}
 
 		drawRect(oldPlayerY, oldPlayerX , player.size, player.size, WHITE);
