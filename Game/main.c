@@ -4,6 +4,11 @@
 #include "mylib.h"
 #include <stdlib.h>
 
+#define min(a,b) 
+   ({ __typeof__ (a) _a = (a); 
+       __typeof__ (b) _b = (b); 
+     _a > _b ? _b : _a; })
+
 typedef struct {
     int x;
     int y;
@@ -36,8 +41,8 @@ typedef struct {
     u16 color;
 } SWITCH;
 
-int yEdgeCollision(int y, int height, int yD);
-int xEdgeCollision(int x, int width, int xD);
+int yEdgeCollision(int x, int y, int height, int yD);
+int xEdgeCollision(int x, int y, int width, int xD);
 
 
 int main() {
@@ -69,14 +74,19 @@ int main() {
         if(KEY_DOWN_NOW(BUTTON_UP))
         {
             newPlayerY += yEdgeCollision(oldPlayerX, oldPlayerY, player.size, neg);
+
         }
         if(KEY_DOWN_NOW(BUTTON_LEFT))
         {
-            newPlayerX += xEdgeCollision(oldPlayerX, oldPlayerY, player.size, neg);
+            int wall = horWallCollision(oldPlayerX, oldPlayerY, player.size, neg);
+            int edge = yEdgeCollision(oldPlayerX, oldPlayerY, player.size, neg);
+            newPlayerX += min(edge, wall);
         }
         if(KEY_DOWN_NOW(BUTTON_RIGHT))
         {
-            newPlayerX += xEdgeCollision(oldPlayerX, oldPlayerY, player.size,  player.speed);
+            int wall = horWallCollision(oldPlayerX, oldPlayerY, player.size, player.speed);
+            int edge = xEdgeCollision(oldPlayerX, oldPlayerY, player.size,  player.speed);
+            newPlayerX += min(edge, wall);
         }
         if(KEY_DOWN_NOW(BUTTON_DOWN))
         {
@@ -106,15 +116,13 @@ int xEdgeCollision(int x, int y, int width, int xD) {
         if (x + width + xD > 240) {
             //return 240 - x - width;
             return 0;
-        } else if (getPixel(x + width + 1, y) == BLACK) {
+        } else if (xWallCollision(x, y, width, xD)) {
             return 0;
         }
     } else if (xD < 0) {
         if (x + xD < 0) {
             return 0;
-        } else if (getPixel(x - 1, y) == BLACK) {
-            return 0;
-        }
+        } 
     }
     return xD;
 }
@@ -124,27 +132,35 @@ int yEdgeCollision(int x, int y, int height, int yD) {
         if (y + height + yD > 160) {
             //return 240 - x - width;
             return 0;
-        } else if (getPixel(x, y + height + 1) == BLACK) {
-            return 0;
         }
     } else if (yD < 0) {
         if (y + yD < 0) {
             //return -x;
             return 0;
-        } else if (getPixel(x, y - 1) == BLACK) {
-            return 0;
-        }
+        } 
     }
     return yD;
 }
 
-// int xWallCollision(int x, int y, int width, int xD) {
 
-//  for (int row = 0; row < width; row++) {
-//      if (getPixel(row + x, y) + )
-//  }
-// }
-
-// int yWallCollision(int x, int y, int height, int yD) {
-
-// }
+int horWallCollision(int x, int y, int size, int xD) {
+    if (xD > 0) {
+        for (int i = 1; i < xD; i++) {
+            for (int j = 0; j < size + 1; j++) {
+                if (getPixel(x + j + size, y + i) == BLACK) {
+                    return i;
+                }
+            }
+        }
+    } else if (xD < 0) {
+        for (int i = -1; i > xD; i--) {
+            for (int j = 0; j < size + 1; j++) {
+                if (getPixel(x + j + size, y + i) == BLACK) {
+                    return i;
+                }
+            }
+        }
+    } else {
+        return xD;
+    }
+}
