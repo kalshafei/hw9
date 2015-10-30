@@ -13,7 +13,7 @@ typedef struct {
 	u16 color;
 } ENEMY;
 
-typedef struct {
+typedef struct  {
 	int x;
 	int y;
 	int speed;
@@ -43,6 +43,7 @@ int xEdgeCollision(int x, int width, int xD);
 int main() {
 
 	REG_DISPCTL = MODE_3 | BG2_EN;
+	drawRect(0, 0, 240, 160, WHITE);
 
 	//ENEMY enemy1 = {x, y, 3, 3, 'U', RED}; //Fill in row col start position
 	//ENEMY enemy2 = {x, y, 3, 3, 'D', RED};
